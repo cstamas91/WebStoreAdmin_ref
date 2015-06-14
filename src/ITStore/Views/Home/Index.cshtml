@@ -1,0 +1,74 @@
+﻿@using ITStore.Models;
+@using PagedList;
+@using PagedList.Mvc;
+@using System.Web.Mvc.Html;
+
+@model PagedList.IPagedList<Product>
+
+@{
+        Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (Model.Count == 0)
+{
+    <h1>
+        Nincsenek termékek.
+    </h1>
+}
+else
+{
+    <table class="IndexProductListing">
+        <tr>
+            <th class="IndexProductListing">
+                Modell
+            </th>
+            <th class="IndexProductListing">
+                @Html.ActionLink("Gyártó", "Index", new { sortOrder = ViewBag.ManufacturerSortParam, categoryID = ViewBag.CategoryID })
+            </th>
+            <th class="IndexProductListing">
+                Kategória
+            </th>
+            <th class="IndexProductListing">
+                Leírás
+            </th>
+            <th class="IndexProductListing">
+                @Html.ActionLink("Ár", "Index", new { sortOrder = ViewBag.PriceSortParam, categoryID = ViewBag.CategoryID })
+            </th>
+            <th class="IndexProductListing">
+                Készlet
+            </th>
+        </tr>
+        @for (Int32 i = 0; i < Model.Count; i++)
+        {   
+            <tr class="IndexProductListing">
+                <td class="IndexProductListing">
+                    @Model[i].Model
+                </td>
+                <td class="IndexProductListing">
+                    @Model[i].Manufacturer
+                </td>
+                <td class="IndexProductListing">
+                    @Model[i].Category.Name
+                </td>
+                <td class="IndexProductListing">
+                    @Model[i].Descr.Substring(0, Model[i].Descr.IndexOf(".", +1))
+                </td>
+                <td class="IndexProductListing">
+                    @Model[i].PriceWithTax Ft (@Model[i].Price Ft)
+                </td>
+                <td class="IndexProductListing">
+                    @Model[i].Stock
+                </td>
+                <td class="IndexProductListing">
+                    @using (Html.BeginForm("AddToCart", "Order", new { productID = @Model[i].ID, categoryID = ViewBag.CategoryID, page = @Model.PageNumber, ViewBag.SortOrder }))
+                    {
+                        @Html.TextBox("quantity", 1, new { type = "number", min = 1, max = @Model[i].Stock, placeholder = 1, id = "quantityBox" })<input type="submit" value="Kosárba" />
+                    }
+                </td>
+            </tr>
+        }   
+    </table>
+    <br />
+    <p>Oldal @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) a(z) @(Model.PageCount)-ből
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort }))
+    </p>
+}

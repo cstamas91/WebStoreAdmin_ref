@@ -1,0 +1,110 @@
+﻿@using ITStore.Models;
+@using System.Web.Mvc.Html;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model Tuple<ProductList, CheckoutModel>
+<strong>A kosár tartalma:</strong>
+@if (Model.Item1.Count == 0)
+{
+    <p>Üres a kosár.</p>
+}
+else
+{
+    <div class="cartProductDiv">
+        <table class="cartProductTable">
+            @for(Int32 i = 0; i < (Model.Item1.Count); ++i)
+            {
+                <tr>
+                    <td style="border:1px solid white; width:100%">
+                        <div class="cartRowDiv">
+                            @using (Html.BeginForm("ChangeQuantity", "Order", new { productID = @Model.Item1[i].ID }))
+                            {
+                                <table class="cartProductTableInner">
+                                    <tr>
+                                        <td class="indexColumn">
+                                            @(i + 1).
+                                        </td>
+                                        <td class="cartColumn">
+                                            @Model.Item1[i].Manufacturer
+                                        </td>
+                                        <td class="cartColumn">
+                                            @Model.Item1[i].Model
+                                        </td>
+                                        <td class="cartColumn">
+                                            @Model.Item1[i].PriceWithTax Ft (Nettó: @Model.Item1[i].Price Ft)
+                                        </td>
+                                        <td class="numberColumn">
+                                            @Html.TextBox("quantity", @Model.Item1[i].Quantity, new { type = "number", min = 0, width="100%" })
+                                        </td>
+                                        <td>
+                                            <input type="submit" value="Megváltoztat" class="button" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </table>
+        <div class="Subtotal">
+            <strong>Teljes összeg:</strong> @Model.Item1.SumTotalWithTax Ft (Nettó: @Model.Item1.SumTotal Ft)
+            @Html.ActionLink("Kosár ürítése", "ClearCart", null, new { @class = "button" })
+        </div>
+    </div>
+    
+    using (Html.BeginForm("Index", "Order", FormMethod.Post))
+    {
+        <table width="700">
+            <tr>
+                <td>
+                    Adatok megadása:
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Név:
+                </td>
+                <td>
+                    @Html.TextBoxFor(tuple => tuple.Item2.CustomerName)
+                    @Html.ValidationMessageFor(tuple => tuple.Item2.CustomerName)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Számlázási cím:
+                </td>
+                <td>
+                    @Html.TextBoxFor(tuple => tuple.Item2.CustomerAddress)
+                    @Html.ValidationMessageFor(tuple => tuple.Item2.CustomerAddress)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Telefonszám:
+                </td>
+                <td>
+                    @Html.TextBoxFor(tuple => tuple.Item2.CustomerPhoneNumber)
+                    @Html.ValidationMessageFor(tuple => tuple.Item2.CustomerPhoneNumber)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    E-mail:
+                </td>
+                <td>
+                    @Html.TextBoxFor(tuple => tuple.Item2.CustomerEmail)
+                    @Html.ValidationMessageFor(tuple => tuple.Item2.CustomerEmail)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Vásárlás megerősítése" class="button" />
+                </td>
+            </tr>
+        </table>
+    }
+}

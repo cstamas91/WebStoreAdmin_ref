@@ -1,0 +1,41 @@
+﻿<Window x:Class="ITStore.Admin.View.ProductEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:viewModel="clr-namspace:ITStore.Admin.ViewModel"
+        Title="IT Store - Termék szerkesztése" Height="200" Width="600" WindowStyle="ToolWindow">
+    <Window.Resources>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition Height="32" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="32" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Text="Gyártó:" Margin="5"/>
+            <TextBox Width="144" Text="{Binding EditedProduct.Manufacturer}" Margin="5" />
+            <TextBlock Text="Kategória:" Margin="5" />
+            <ComboBox Width="144" ItemsSource="{Binding Categories}" SelectedItem="{Binding EditedProduct.Category}" DisplayMemberPath="Name" Margin="5" />
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock Text="Model:" Margin="5"/>
+            <TextBox Width="144" Text="{Binding EditedProduct.Model}" Margin="5"/>
+            <TextBlock Text="Ár:" Margin="5"/>
+            <TextBox Width="144" Text="{Binding EditedProduct.Price}" Margin="5"/>
+            <TextBlock Text="Raktáron:" Margin="5" />
+            <TextBox Width="55" Text="{Binding EditedProduct.Stock}" IsEnabled="{Binding EditedProduct.IsActive}" Margin="5" />
+            <TextBlock Text="Aktív:" Margin="5" />
+            <CheckBox IsChecked="{Binding EditedProduct.IsActive}" Margin="8" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <TextBlock Text="Leírás:" Margin="5" />
+            <TextBox Width="530" Height="auto" Text="{Binding EditedProduct.Descr}" Margin="5"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Mentés" Command="{Binding SaveChangesCommand}" Width="100" Margin="6,3,0,3"/>
+            <Button Content="Mégse" Command="{Binding CancelChangesCommand}" Width="100" Margin="6,3,5,3"/>
+        </StackPanel>
+    </Grid>
+</Window>

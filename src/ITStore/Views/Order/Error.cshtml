@@ -1,0 +1,14 @@
+﻿@using ITStore.Models;
+@using System.Web.Mvc.Html;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model String
+
+<h1>
+    Hiba:<br/>
+    @Model
+</h1>
+@Html.ActionLink("Vissza a készlethez", "Index", "Home", new { }, new { @class = "button" })

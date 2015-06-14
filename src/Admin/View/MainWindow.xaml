@@ -1,0 +1,95 @@
+﻿<Window x:Class="ITStore.Admin.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:viewModel="clr-namespace:ITStore.Admin.ViewModel"
+        Title="ITStore - Termékek karbantartása" Height="640" Width="800" MinHeight="450" MinWidth="650">
+    <Window.Resources>
+        <viewModel:CategoryConverter x:Key="categoryConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="Kilépés" Command="{Binding ExitCommand}" />
+        </Menu>
+        <TabControl Grid.Row="1">
+            <TabItem Header="Termékek">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Button Content="Termékek betöltése" Margin="6,5,0,5" Width="114" Command="{Binding LoadProductCommand}"/>
+                        <Button Content="Termékek mentése" Margin="6,5,0,5" Width="114" Command="{Binding SaveProductCommand}" IsEnabled="{Binding ProductIsLoaded}"/>
+                        <TextBlock Text="Kategória: " Margin="6,10,5,5" />
+                        <ComboBox Width="114" ItemsSource="{Binding Categories}" SelectedIndex="{Binding SelectedCategoryIndex}" Margin="6,5,0,5"/>
+                    </StackPanel>
+                    <DataGrid Name="productGrid" Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Gyártó" Binding="{Binding Manufacturer}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Model" Binding="{Binding Model}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Leírás" Binding="{Binding Descr}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Ár (nettó)" Binding="{Binding Price}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Ár (bruttó)" Binding="{Binding PriceWithTax}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Raktáron" Binding="{Binding Stock}" IsReadOnly="True"/>
+                            <DataGridCheckBoxColumn Header="Elérhetőség" Binding="{Binding IsActive}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Button Content="Termék módosítása" Command="{Binding ModifyProductCommand}" CommandParameter="{Binding SelectedProduct}" Width="144" Margin="3" IsEnabled="{Binding ProductIsLoaded}"/>
+                        <Button Content="Új termék hozzáadása" Command="{Binding AddProductCommand}" Width="144" Margin="3" IsEnabled="{Binding ProductIsLoaded}"/>
+                        <Button Content="Termék törlése" Command="{Binding DeleteProductCommand}" CommandParameter="{Binding SelectedProduct}" Width="144" Margin="3" IsEnabled="{Binding ProductIsLoaded}"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Rendelések">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Button Content="Rendelések betöltése" Margin="6,5,0,5" Width="114" Command="{Binding LoadOrdersCommand}"/>
+                        <Button Content="Rendelések mentése" Margin="6,5,0,5" Width="114" Command="{Binding SaveOrderCommand}" IsEnabled="{Binding OrderIsLoaded}"/>
+                        <TextBlock Text="Szűrés névre:" Margin="8"/>
+                        <TextBox Width="100" Margin="6,5,0,5" Text="{Binding NameFilterString}" IsEnabled="{Binding OrderIsLoaded}"/>
+                        <TextBlock Text="Teljesítettség:" Margin="8"/>
+                        <CheckBox IsChecked="{Binding CompletionFilter}" IsEnabled="{Binding OrderIsLoaded}" Margin="10"/>
+                        <TextBlock Text="Dátum:" Margin="8"/>
+                        <DatePicker SelectedDate="{Binding DateFilter}" DisplayDate="{Binding DateFilter}" DisplayDateStart="2015.01.01" IsEnabled="{Binding OrderIsLoaded}" Margin="5"/>
+                    </StackPanel>
+                    <DataGrid Name="orderGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Orders}" SelectedIndex="{Binding SelectedOrderIndex}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Dátum" Binding="{Binding Datum.Date}" />
+                            <DataGridTextColumn Header="Név" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="E-mail" Binding="{Binding Email}"/>
+                            <DataGridTextColumn Header="Cím" Binding="{Binding Addr}"/>
+                            <DataGridTextColumn Header="Telefonszám" Binding="{Binding Phone}"/>
+                            <DataGridTextColumn Header="Teljesítés" Binding="{Binding Completion}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <DataGrid Name="orderProductGrid" Grid.Row="2" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding SelectedOrderProducts}" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Gyártó" Binding="{Binding Product.Manufacturer}" />
+                            <DataGridTextColumn Header="Model" Binding="{Binding Product.Model}"/>
+                            <DataGridTextColumn Header="Leírás" Binding="{Binding Product.Descr}"/>
+                            <DataGridTextColumn Header="Ár (nettó)" Binding="{Binding Product.Price}"/>
+                            <DataGridTextColumn Header="Ár (bruttó)" Binding="{Binding Product.PriceWithTax}" />
+                            <DataGridTextColumn Header="Raktáron" Binding="{Binding Product.Stock}"/>
+                            <DataGridTextColumn Header="Elérhetőség" Binding="{Binding Product.IsActive}"/>
+                            <DataGridTextColumn Header="Rendelt db" Binding="{Binding Quantity}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

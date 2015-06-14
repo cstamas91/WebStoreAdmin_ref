@@ -1,0 +1,77 @@
+﻿@using ITStore.Models;
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Az elektronikai szaküzlet honlapja</title>
+    <link href="@Url.Content("~/Content/Styles.css")" rel="stylesheet" type="text/css" />
+
+    @* kliens oldali validáció használata *@
+    <script src="@Url.Content("~/Scripts/jquery-2.1.3.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")"></script>
+
+    @* kliens oldali validáció nyelvspecifikussá tétele (kimondottan a dátum esetére) *@
+    <script src="@Url.Content("~/Scripts/globalize/globalize.js")"></script>
+    <script src="@Url.Content("~/Scripts/globalize/cultures/globalize.culture." + Culture + ".js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.globalize.min.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            Globalize.culture("@Culture"); @* megfelelő nyelvi környezet használata *@
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div class="headerText">
+            <h1>
+                Az Elektronikai szaküzlet iroda
+            </h1>
+            <h3>
+                A szaküzlet. Jelenleg @HttpContext.Current.Application["guestCount"] vendég böngészi az oldalt.
+                @* megjelenítjük az alkalmazásszintű értékeket *@
+            </h3>
+        </div>
+        <div class="headerAdmin">
+            @Html.ActionLink("Kosár megtekintése", "Index", "Order")
+        </div>
+    </div>
+    <div class="content">
+        <div class="leftColumn">
+            <h3>Keresés kategóriák szerint</h3>
+            @* amennyiben nincsenek megadva a városok *@
+            @if (ViewBag.Categories == null || ViewBag.Categories.Length == 0)
+            {
+                <span>Üres a készlet.</span>
+            }
+            else
+            {
+                <ul>
+                    <li>
+                        @Html.ActionLink("Minden termék", "Index", "Home", new { categoryID = 0 }, new { })
+                    </li>
+                    @* felsoroljuk a városokat *@
+                    @foreach (Category category in ViewBag.Categories)
+                    {
+                        <li>
+                            @* létrehozunk egy linket minden kategóriára az Index akcióra az azonosító paraméterrel *@
+                            @Html.ActionLink(category.Name, "Index", "Home", new { categoryID = category.ID }, new { })
+                            @* a paramétert egy anonim típusban adjuk meg *@
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+        <div class="rightColumn">
+            @RenderBody()
+            @* betöltjük a tényleges oldal törzsét *@
+        </div>
+    </div>
+</body>
+</html>
